@@ -20,52 +20,46 @@ start
 	
 	MOV R2, #0x100 ; START von links
 	
-	LDR R9,=150600
+	LDR R9,=187500 ;geschätzt
 	MOV R8,R9
 	
 	
 	
 start_from_begin
-	;STR R5,[R3]
 	MOV R5,R1
 
 loop_left
-	MOV R8,R9
+	MOV R8,R9 ;Timer angelegenheiten
 	STR R5,[R3]
 	LSL R5,#1
 	
-	CMP R5,#0x0000200
+
 	
-	BEQ start_from_begin
 loop_one
 	LDR R6,[R3]
 	AND R6,R6,#0x00000400
 	CMP R6,#1024
-	
-	;BNE loop_right
+
 	BNE wait_me_to_right
-	SUBS R8,R8,#1
+	SUBS R8,R8,#1 ;Timer angelegenheit
 	BNE loop_one
 	
+	CMP R5,#0x0000200
+	
+	BEQ start_from_begin
 	
 	B loop_left
 	
 	
 	
 start_from_end
-	;MOV R5,R1
-	;STR R5,[R3]
 	MOV R5,R2  ;LEDs zuruecksetzen
 
 loop_right
 	MOV R8,R9   ;Timer zuruecksetzen
-	;STR R5,[R3]
 	LSR R5,R5,#1
 	
-	CMP R5,#0x00000000
-		
 	
-	BEQ start_from_end
 
 	
 loop_two
@@ -73,11 +67,17 @@ loop_two
 	AND R6,R6,#0x00000400
 	CMP R6,#1024
 	
-	;BNE loop_left
 	BNE wait_me_to_left
 	
 	SUBS R8,R8,#1
 	BNE loop_two
+	
+	CMP R5,#0x00000000
+		
+	
+	BEQ start_from_end
+	
+	
 	
 	STR R5,[R3]
 	
